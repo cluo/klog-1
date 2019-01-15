@@ -11,7 +11,7 @@ import (
 
 var (
 	appName string // app 名称
-	podNO   int    // 第几个app
+	podNO   int    // 第几个pod
 
 	logOption string // 查看日志选项
 )
@@ -28,17 +28,6 @@ func init() {
 		fmt.Println("example：")
 		fmt.Println("the first pod log:\n    klog --appName=account")
 		fmt.Println("spec pod log:\n    klog --appName=account --podNO=3\n")
-
-		fmt.Println(`module name:
-	wq-account
-	wq-email
-	wq-exchange-order
-	wq-file
-	wq-history-quote
-	wq-order-prepare
-	wq-pcc
-	wq-quote
-	wq-risk`, "\n")
 
 		os.Exit(1)
 	}
