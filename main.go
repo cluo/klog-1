@@ -10,24 +10,35 @@ import (
 )
 
 var (
-	appName string // app 名称
-	podNO   int    // 第几个pod
+	name  string // app 名称
+	podNO int    // 第几个pod
 
 	logOption string // 查看日志选项
 )
 
 func init() {
-	flag.StringVar(&appName, "appName", "", "app name")
+	flag.StringVar(&name, "name", "", "app name")
 	flag.IntVar(&podNO, "podNO", 1, "spec witch pod, starting from 1")
 	flag.StringVar(&logOption, "logOption", "-f --tail=100", "kubectl logs options")
 	flag.Parse()
 
-	if appName == "" {
-		fmt.Println("error: appName is empty.")
-		fmt.Println("usage: klog --appName=<appName> [--podNO=podNO]\n")
+	if name == "" {
+		fmt.Println("error: name is empty.")
+		fmt.Println("usage: klog --name=<name> [--podNO=podNO]\n")
 		fmt.Println("example：")
-		fmt.Println("the first pod log:\n    klog --appName=account")
-		fmt.Println("spec pod log:\n    klog --appName=account --podNO=3\n")
+		fmt.Println("the first pod log:\n    klog --name=account")
+		fmt.Println("spec pod log:\n    klog --name=account --podNO=3\n")
+
+		fmt.Println(`view some modules log, copy and execute:
+	klog --name=wq-account
+	klog --name=wq-email
+	klog --name=wq-exchange-order
+	klog --name=wq-file
+	klog --name=wq-history-quote
+	klog --name=wq-order-prepare
+	klog --name=wq-pcc
+	klog --name=wq-quote
+	klog --name=wq-risk`, "\n")
 
 		os.Exit(1)
 	}
@@ -43,7 +54,7 @@ func init() {
 
 func main() {
 	// 获取pod name
-	arg := fmt.Sprintf("kubectl get pod | grep %s | sed -n \"%d, 1p\" | awk '{print $1}'", appName, podNO)
+	arg := fmt.Sprintf("kubectl get pod | grep %s | sed -n \"%d, 1p\" | awk '{print $1}'", name, podNO)
 	out, err := execShellForNoneBlock(arg)
 	if err != nil {
 		fmt.Printf("error: %s, arg = %s\n", err.Error(), arg)
@@ -53,7 +64,7 @@ func main() {
 
 	// 获取pod name失败处理
 	if podName == "" {
-		arg = fmt.Sprintf("kubectl get pod | grep %s | wc -l", appName)
+		arg = fmt.Sprintf("kubectl get pod | grep %s | wc -l", name)
 		out, err = execShellForNoneBlock(arg)
 		if err != nil {
 			fmt.Printf("error: %s, arg = %s\n", err.Error(), arg)
@@ -61,7 +72,7 @@ func main() {
 		}
 		fmt.Printf("error: can not find the %dth pod name, total %s pods.\n\n", podNO, getData(out))
 
-		arg = fmt.Sprintf("kubectl get pod | grep %s", appName)
+		arg = fmt.Sprintf("kubectl get pod | grep %s", name)
 		out, err := execShellForNoneBlock(arg)
 		if err != nil {
 			fmt.Printf("error: %s, arg = %s\n", err.Error(), arg)

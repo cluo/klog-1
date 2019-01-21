@@ -14,8 +14,8 @@ go into the folder, run command **go build**, and move binary to your envionment
 
 view the first pod log:
 
-> klog --appName=account
+> klog --name=account
 
 view spec pod log:
 
-> klog --appName=account --podNO=3
+> klog --name=account --podNO=3
